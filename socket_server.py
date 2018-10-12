@@ -100,7 +100,7 @@ def start():
             new_client.start()
 
         except OSError:
-            print("Connection error :")
+            print("Connection error : this is a test")
             for c in client_ls:
                 c.close()
             s.close()
