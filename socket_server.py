@@ -19,7 +19,6 @@ MoxBox = "MoxBox"
 client_ls = []
 init = True
 
-
 def formatData2csv(timestamp, data, header=False):
     list2write = []
     if header:
@@ -101,7 +100,7 @@ def start():
             new_client.start()
 
         except OSError:
-            print("Connection error")
+            print("Connection error :")
             for c in client_ls:
                 c.close()
             s.close()
