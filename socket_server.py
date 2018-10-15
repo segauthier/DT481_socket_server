@@ -45,13 +45,15 @@ class ClientThread(threading.Thread):
         print("Starting new client thread at %s, port: %s" % (self.ip, self.port, ))
 
     def run(self):
-        while True:
+        bool_run = True
+        while bool_run:
             try:
                 response = self.clientsocket.recv(4096)
             except socket.timeout:
                 response = ""
                 print("Client ", self.ident, "has timeout.")
                 self.terminate()
+                bool_run = False
 
             if response != "":
                 print("Client id :", self.ident)
@@ -100,7 +102,7 @@ def start():
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             host = socket.gethostname()
             s.bind((host, host_port))
-            s.listen(10)
+            s.listen(5)
             s.settimeout(30) #30s timeout
             print("Starting server and listening ...")
             print("Host name :", host)
@@ -115,7 +117,7 @@ def start():
         except OSError:
             print("Connection error:")
             for c in client_ls:
-                c.close()
+                c.terminate()
             s.close()
             init = True
 
