@@ -28,11 +28,11 @@ def read_STNUCLEO():
 
     inData = uart.read(uart.any())
 
-    BME680_data[IAQ] = (inData[0] + 256*inData[1])/100
+    BME680_data[tVOC] = (inData[0] + 256*inData[1])/100
     BME680_data[IAQ_ACC] = inData[2]
     BME680_data[TEMP] = (inData[3] + 256*inData[4])/100
     BME680_data[HUM] = (inData[5] + 256 * inData[6])/100
-    BME680_data[PRES] = (inData[7] + 256 * inData[8])/100
+    #BME680_data[PRES] = (inData[7] + 256 * inData[8])/100
     BME680_data[GAS] = (inData[9] + 256 * inData[10])/100
 
     SGP30_data[tVOC] = (inData[11] + 256 * inData[12])

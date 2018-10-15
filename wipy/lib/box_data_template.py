@@ -19,9 +19,10 @@ PRES = "pressure"
 GAS = "gas"
 tVOC = "tVOC"
 eCO2 = "eCO2"
+CO2 = "CO2"
 
-BOX_data = {BOX_ID: 0, CO2_ref:0, T_ref:0, RH_ref:0}
-BME680_data = {IAQ: 0, IAQ_ACC: 0, TEMP: 0, HUM: 0, PRES: 0, GAS: 0}
+BOX_data = {BOX_ID: 0, CO2_ref: 0, T_ref: 0, RH_ref: 0}
+BME680_data = {tVOC: 0, IAQ_ACC: 0, TEMP: 0, HUM: 0, GAS: 0}
 SGP30_data = {tVOC: 0, eCO2: 0}
 CCS811_data = {tVOC: 0, eCO2: 0}
 
