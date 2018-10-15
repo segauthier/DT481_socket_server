@@ -42,18 +42,13 @@ class ClientThread(threading.Thread):
         self.ip = ip
         self.port = port
         self.clientsocket = clientsocket
+        self.clientsocket.setblocking(0)
         print("Starting new client thread at %s, port: %s" % (self.ip, self.port, ))
 
     def run(self):
         bool_run = True
         while bool_run:
-            try:
-                response = self.clientsocket.recv(4096)
-            except socket.timeout:
-                response = ""
-                print("Client ", self.ident, "has timeout.")
-                self.terminate()
-                bool_run = False
+            response = self.recv_timeout(10)
 
             if response != "":
                 print("Client id :", self.ident)
@@ -62,6 +57,34 @@ class ClientThread(threading.Thread):
                     self.write_csv(json.loads(response))
                 except (json.JSONDecodeError, PermissionError) as e:
                     print(e)
+            else:
+                bool_run = False
+
+    def recv_timeout(self, timeout=10):
+        total_data = []
+
+        begin = time.time()
+        while 1:
+            if total_data and time.time()-begin > timeout:
+                print("Client ", self.ident, "has timeout.")
+                self.terminate()
+                break
+
+            elif time.time()-begin > timeout*2:
+                print("Client ", self.ident, "has timeout.")
+                self.terminate()
+                break
+
+            try:
+                data = self.clientsocket.recv(4096)
+                if data:
+                    total_data.append(data)
+                    begin = time.time()
+                else:
+                    time.sleep(0.1)
+            except socket.timeout:
+                pass
+        return ''.join(total_data)
 
     def terminate(self):
         print("Client ", self.ident, "was closed.")
@@ -103,7 +126,6 @@ def start():
             host = socket.gethostname()
             s.bind((host, host_port))
             s.listen(5)
-            s.settimeout(30) #30s timeout
             print("Starting server and listening ...")
             print("Host name :", host)
             init = False
