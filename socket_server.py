@@ -49,7 +49,13 @@ class ClientThread(threading.Thread):
         time.sleep(10)
         bool_run = True
         while bool_run:
-            response = self.recv_timeout(10)
+            try:
+                self.clientsocket.settimeout(30)
+                response = self.clientsocket.recv(4092)
+                self.clientsocket.settimeout(None)
+            except socket.timeout:
+                response = ""
+                self.terminate()
 
             if response != "":
                 print("Client id :", self.ident)
@@ -60,32 +66,6 @@ class ClientThread(threading.Thread):
                     print(e)
             else:
                 bool_run = False
-
-    def recv_timeout(self, timeout=10):
-        total_data = []
-
-        begin = time.time()
-        while 1:
-            if total_data and time.time()-begin > timeout:
-                print("Client ", self.ident, "has timeout.")
-                self.terminate()
-                break
-
-            elif time.time()-begin > timeout*2:
-                print("Client ", self.ident, "has timeout.")
-                self.terminate()
-                break
-
-            try:
-                data = self.clientsocket.recv(4096)
-                if data:
-                    total_data.append(data)
-                    begin = time.time()
-                else:
-                    time.sleep(0.1)
-            except socket.timeout:
-                pass
-        return ''.join(total_data)
 
     def terminate(self):
         print("Client ", self.ident, "was closed.")
