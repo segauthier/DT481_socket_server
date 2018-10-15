@@ -42,8 +42,6 @@ class ClientThread(threading.Thread):
         self.ip = ip
         self.port = port
         self.clientsocket = clientsocket
-
-
         print("Starting new client thread at %s, port: %s" % (self.ip, self.port, ))
 
     def run(self):
@@ -52,15 +50,20 @@ class ClientThread(threading.Thread):
                 response = self.clientsocket.recv(4096)
             except socket.timeout:
                 response = ""
-                self.clientsocket.close()
+                print("Client ", self.ident, "has timeout.")
+                self.terminate()
 
             if response != "":
-                print("Thread id :", self.ident)
+                print("Client id :", self.ident)
                 print(response)
                 try:
                     self.write_csv(json.loads(response))
                 except (json.JSONDecodeError, PermissionError) as e:
                     print(e)
+
+    def terminate(self):
+        print("Client ", self.ident, "was closed.")
+        self.clientsocket.close()
 
     @staticmethod
     def write_csv(data):
@@ -106,6 +109,7 @@ def start():
         try:
             client, address = s.accept()
             new_client = ClientThread(address, host_port, client)
+            client_ls.append(new_client)
             new_client.start()
 
         except OSError:
