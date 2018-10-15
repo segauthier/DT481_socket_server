@@ -46,7 +46,7 @@ class ClientThread(threading.Thread):
         print("Starting new client thread at %s, port: %s" % (self.ip, self.port, ))
 
     def run(self):
-        time.sleep(5)
+        time.sleep(10)
         bool_run = True
         while bool_run:
             response = self.recv_timeout(10)
