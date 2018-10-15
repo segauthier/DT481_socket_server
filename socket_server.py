@@ -59,10 +59,11 @@ class ClientThread(threading.Thread):
 
             if response != "":
                 print("Client id :", self.ident)
-                print(response)
                 try:
+                    print(response)
                     self.write_csv(json.loads(response))
                 except (json.JSONDecodeError, PermissionError) as e:
+                    print("json decoding error.")
                     print(e)
             else:
                 bool_run = False
