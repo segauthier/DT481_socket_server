@@ -50,8 +50,8 @@ class ClientThread(threading.Thread):
         bool_run = True
         while bool_run:
             try:
-                self.clientsocket.settimeout(30)
-                response = self.clientsocket.recv(4092)
+                self.clientsocket.settimeout(10)
+                response = self.clientsocket.recv(2048)
                 self.clientsocket.settimeout(None)
             except socket.timeout:
                 response = ""
