@@ -19,6 +19,7 @@ MoxBox = "MoxBox"
 client_ls = []
 init = True
 
+
 def formatData2csv(timestamp, data, header=False):
     list2write = []
     if header:
@@ -42,12 +43,19 @@ class ClientThread(threading.Thread):
         self.port = port
         self.clientsocket = clientsocket
 
+
         print("Starting new client thread at %s, port: %s" % (self.ip, self.port, ))
 
     def run(self):
         while True:
-            response = self.clientsocket.recv(4096)
+            try:
+                response = self.clientsocket.recv(4096)
+            except socket.timeout:
+                response = ""
+                self.clientsocket.close()
+
             if response != "":
+                print("Thread id :", self.ident)
                 print(response)
                 try:
                     self.write_csv(json.loads(response))
@@ -90,6 +98,7 @@ def start():
             host = socket.gethostname()
             s.bind((host, host_port))
             s.listen(10)
+            s.settimeout(30) #30s timeout
             print("Starting server and listening ...")
             print("Host name :", host)
             init = False
