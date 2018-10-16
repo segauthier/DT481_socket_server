@@ -51,7 +51,7 @@ class ClientThread(threading.Thread):
         while bool_run:
             try:
                 self.clientsocket.settimeout(10)
-                response = self.clientsocket.recv(2048)
+                response = self.clientsocket.recv(4096)
                 self.clientsocket.settimeout(None)
             except socket.timeout:
                 response = ""
@@ -60,8 +60,8 @@ class ClientThread(threading.Thread):
             if response != "":
                 print("Client id :", self.ident)
                 try:
-                    print(response)
                     self.write_csv(json.loads(response))
+                    print(response)
                 except (json.JSONDecodeError, PermissionError) as e:
                     print("json decoding error.")
                     print(e)

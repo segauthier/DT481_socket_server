@@ -38,12 +38,10 @@ def read_STNUCLEO():
     SGP30_data[tVOC] = (inData[11] + 256 * inData[12])
     SGP30_data[eCO2] = (inData[13] + 256 * inData[14])
 
-    CCS811_data[tVOC] = (inData[15] + 256 * inData[16])
-    CCS811_data[eCO2] = (inData[17] + 256 * inData[18])
+    CCS811_data[eCO2] = (inData[15] + 256 * inData[16])
+    CCS811_data[tVOC] = (inData[17] + 256 * inData[18])
 
     BOX_data[BOX_ID] = box_id
-
-    print(ustruct.unpack('>f', bytearray([0x43, 0xDB, 0x8c,0x2e])))
 
     BOX_data[CO2_ref] = ustruct.unpack('>f', bytearray([inData[19], inData[20], inData[21], inData[22]]))[0]
     BOX_data[T_ref] = ustruct.unpack('>f', bytearray([inData[23], inData[24], inData[25], inData[26]]))[0]
