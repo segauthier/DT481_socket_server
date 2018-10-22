@@ -48,6 +48,7 @@ class ClientThread(threading.Thread):
     def run(self):
         time.sleep(10)
         bool_run = True
+        i_error = 0
         while bool_run:
             try:
                 self.clientsocket.settimeout(10)
@@ -62,9 +63,14 @@ class ClientThread(threading.Thread):
                 try:
                     self.write_csv(json.loads(response))
                     print(response)
+                    i_error = 0
                 except (json.JSONDecodeError, PermissionError) as e:
                     print("json decoding error.")
                     print(e)
+                    i_error += 1
+                    if i_error > 20:
+                        self.terminate()
+                        bool_run = False
             else:
                 bool_run = False
 
